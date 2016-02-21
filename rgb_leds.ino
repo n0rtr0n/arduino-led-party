@@ -33,6 +33,7 @@ bool alternateRowsReversed = true;
 
 //TODO: standardize usage of variable names
 //TOOD: create custom typedef for strip color
+//TODO: adjust brightness programatically with strip.setBrightness
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = pin number (most are valid)
@@ -54,14 +55,16 @@ void loop() {
   // Some example procedures showing how to display to the pixels:
   //colorCycle(50);
   //rainbow(50);
-//  colorWipe(strip.Color(127, 0, 0), 50); // Red
-//  colorWipe(strip.Color(0, 127, 0), 50); // Green
-//  colorWipe(strip.Color(127, 0, 255), 50); // Purple
-//  colorWipe(strip.Color(0, 0, 255), 50); // Blue
+  fadeIntoColor(strip.Color(255, 0, 0), strip.Color(0,255,0), 20);
+  colorWipeFromMiddle(strip.Color(255, 0, 0), 50); // Red
+  colorWipeFromMiddle(strip.Color(0, 255, 0), 50); // Green
+  colorWipeFromMiddle(strip.Color(255, 0, 255), 50); // Purple
+  colorWipeFromMiddle(strip.Color(0, 255, 255), 50); // Yellow
+  colorWipeFromMiddle(strip.Color(0, 0, 255), 50); // Blue
   
-//  rainbow(20);
+  //rainbow(20);
   //rainbowCycle(20);
-  rainbowCycleWithDirectionChange();
+  //rainbowCycleWithDirectionChange();
   
   
 }
@@ -93,7 +96,6 @@ void randomizeColors() {
   randomBlue = random(0, 255);
 }
 
-
 void randomFreakout(uint8_t wait) {
   for (uint16_t i=0; i < strip.numPixels(); i++) {
     randomizeColors();
@@ -104,7 +106,7 @@ void randomFreakout(uint8_t wait) {
   delay(wait);
 }
 
-//colorWipe(strip.Color(127, 0, 0), 50); // Red
+//(strip.Color(127, 0, 0), 50); // Red
 //colorWipe(strip.Color(, 127, 0), 50); // Green
 //colorWipe(strip.Color(0, 0, 255), 50); // Blue
 // Fill the dots one after the other with a color
@@ -114,6 +116,25 @@ void colorWipe(uint32_t c, uint8_t wait) {
       strip.show();
       delay(wait);
   }
+}
+
+void colorWipeFromMiddle (uint32_t c, uint8_t wait) {
+  uint8_t rowTotal = COUNT_PER_ROW;
+  for(uint16_t i= 0; i < rowTotal / 2; i++) {
+      setPixelColor(rowTotal / 2 - i, c, true);
+      setPixelColor(rowTotal / 2 + 1 + i, c, true);
+      strip.show();
+      delay(wait);
+  }
+}
+
+void fadeIntoColor(uint32_t startColor, uint32_t finishColor, uint8_t wait) {
+  Serial.println(unpackRedValue(startColor));
+  Serial.println(unpackGreenValue(startColor));
+  Serial.println(unpackBlueValue(startColor));
+  Serial.println(unpackRedValue(finishColor));
+  Serial.println(unpackGreenValue(finishColor));
+  Serial.println(unpackBlueValue(finishColor));
 }
 
 //rainbow(20);
@@ -217,6 +238,17 @@ void setNthPixelOfEachRowToColor(uint8_t n, uint32_t color) {
     strip.setPixelColor(j, color); 
   }
   return;
+}
+
+//working with shifted bits, so this is necessary to get a color from a combination of them
+uint8_t unpackRedValue(uint32_t color) {
+  return (uint8_t)(color >> 16);
+}
+uint8_t unpackGreenValue(uint32_t color) {
+  return (uint8_t)(color >> 8);
+}
+uint8_t unpackBlueValue(uint32_t color) {
+  return (uint8_t)(color);
 }
 
 // Input a value 0 to 255 to get a color value.
