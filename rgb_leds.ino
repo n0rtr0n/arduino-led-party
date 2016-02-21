@@ -28,8 +28,8 @@ int8_t currentDelayDirection = 5;
 //TODO: switch this on and off with user input
 bool syncAcrossAll = true;
 
-//TODO: sync across all but with every second row reversed
-bool alternateReversed = false;
+//for now, assume we'll hook it up in a sane configuration where every alternate row is reversed
+bool alternateRowsReversed = true;
 
 //TODO: standardize usage of variable names
 //TOOD: create custom typedef for strip color
@@ -158,7 +158,7 @@ void rainbowCycleWithDirectionChange() {
   for(j=256 * 5; j > 0; j--) { // 5 cycles of all colors backwards
     for(i=strip.numPixels(); i > 0; i--) {
       color = Wheel(((i * 256 / COUNT_PER_ROW) + j) & 255);
-      strip.setPixelColor(i, color);
+      setPixelColor(i, color, true);
     }
     strip.show();
     delay(5);
@@ -184,7 +184,7 @@ void rainbowCycle(uint8_t wait) {
     for(i=0; i< COUNT_PER_ROW; i++) {
       //color = Wheel(((i * 256 / strip.numPixels()) + j) & 255);
       color = Wheel(((i * 256 / COUNT_PER_ROW) + j) & 255);
-      setPixelColor(i,color, true);
+      setPixelColor(i ,color, true);
     }
     strip.show();
     delay(wait);
@@ -207,8 +207,14 @@ uint32_t Wheel(byte WheelPos) {
 
 void setNthPixelOfEachRowToColor(uint8_t n, uint32_t color) {
   for (uint16_t i = 0; i < STRIP_COUNT; i++) {
-    uint16_t j = (i * COUNT_PER_ROW) + n;
-    strip.setPixelColor((i * COUNT_PER_ROW) + n, color); 
+    uint16_t j;
+    if (alternateRowsReversed && (i % 2 == 1))  {
+      //we're on a reversed row
+      j = ((i + 1) * COUNT_PER_ROW) - n; // 63 would become 117
+    } else {
+      j = (i * COUNT_PER_ROW) + n;
+    }
+    strip.setPixelColor(j, color); 
   }
   return;
 }
