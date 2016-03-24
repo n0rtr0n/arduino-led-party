@@ -45,22 +45,23 @@ bool alternateRowsReversed = true;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  randomSeed(analogRead(0));
+  //randomSeed(analogRead(0));
 }
 
 void loop() {
   // Some example procedures showing how to display to the pixels:
   //colorCycle(50);
   //rainbow(50);
-  fadeIntoColor(strip.Color(255, 0, 0), strip.Color(0,255,0), 20);
-  colorWipeFromMiddle(strip.Color(255, 0, 0), 50); // Red
-  colorWipeFromMiddle(strip.Color(0, 255, 0), 50); // Green
-  colorWipeFromMiddle(strip.Color(255, 0, 255), 50); // Purple
-  colorWipeFromMiddle(strip.Color(0, 255, 255), 50); // Yellow
-  colorWipeFromMiddle(strip.Color(0, 0, 255), 50); // Blue
+  //fadeIntoColor(strip.Color(255, 0, 0), strip.Color(0,255,0), 20);
+  rainbow(50);
+//  colorWipeFromMiddle(strip.Color(255, 0, 0), 50); // Red
+//  colorWipeFromMiddle(strip.Color(0, 255, 0), 50); // Green
+//  colorWipeFromMiddle(strip.Color(255, 0, 255), 50); // Purple
+//  colorWipeFromMiddle(strip.Color(0, 255, 255), 50); // Yellow
+//  colorWipeFromMiddle(strip.Color(0, 0, 255), 50); // Blue
   
   //rainbow(20);
   //rainbowCycle(20);
